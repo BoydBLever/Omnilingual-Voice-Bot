@@ -60,12 +60,12 @@ python -m streamlit run app.py
 
 ```mermaid
 flowchart LR
-    A[User Speech] --> B[OmniASR via sherpa-onnx]
-    B --> C[Transcript Text]
-    C --> D[LLM Processor - LangChain / ChatOpenAI]
-    D --> E[Mode Switch / System Prompt Routing]
-    E --> F[LLM Response Text]
-    F --> G[gTTS Text-to-Speech Engine]
-    G --> H[Audio Reply]
+    A[User Speech] --> B[ASR: OmniASR]
+    B --> C[Transcript]
+    C --> D[LLM: LangChain + GPT]
+    D --> E[System Prompt Mode]
+    E --> F[AI Response]
+    F --> G[TTS Output]
+    G --> H[Spoken Reply]
 ```
 
