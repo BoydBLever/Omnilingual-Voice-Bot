@@ -27,7 +27,7 @@ This **voice conversation bot** records microphone audio, transcribes the speech
 
 ### 1. Clone the repository
 ```
-git clone https://github.com/BoydBLever/react-marketing-voice-bot.git
+git clone https://github.com/BoydBLever/Omnilingual-Voice-Bot.git
 cd react-marketing-voice-bot
 ```
 
