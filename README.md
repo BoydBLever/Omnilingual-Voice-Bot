@@ -65,8 +65,11 @@ make -j8
   "asr_models/omnilingual_1b/test_wavs/en.wav"
 ```
 
-## Run the Bot
+### 7. Run the Bot
+```
 python -m streamlit run app.py
+```
+---
 
 ## Architecture
 
