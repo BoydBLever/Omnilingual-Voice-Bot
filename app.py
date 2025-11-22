@@ -9,6 +9,9 @@ import base64
 from openai import OpenAI
 from utils.audio_utils import AudioProcessor
 from utils.llm_utils import LLMProcessor
+import sounddevice as sd
+import soundfile as sf
+from utils.audio_utils import play_audio_local
 
 # Load environment variables
 load_dotenv()
@@ -84,6 +87,11 @@ def visualize_audio(audio_path):
     except Exception as e:
         st.warning(f"Unable to visualize audio: {str(e)}")
 
+def play_audio_local(filepath: str):
+    data, sr = sf.read(filepath, dtype="float32")
+    sd.play(data, sr)
+    sd.wait()
+
 def handle_audio_input():
     """Handle audio input"""
     with st.spinner(f"Recording {st.session_state.recording_duration} seconds..."):
@@ -115,6 +123,7 @@ def handle_audio_input():
                             st.success("AI response:")
                             st.write(response)
                             st.audio(audio_response)
+                            play_audio_local(audio_response)
                 else:
                     st.error("Audio transcription failed")
         else:

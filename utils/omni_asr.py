@@ -1,34 +1,55 @@
-import os
-import requests
+# utils/omni_asr.py
+import os, subprocess, shlex, json
 
-HF_TOKEN = os.getenv("HF_TOKEN")
-HF_MODEL_ID = "csukuangfj/sherpa-onnx-omnilingual-asr-1600-languages-1B-ctc-2025-11-12"
-API_URL = f"https://router.huggingface.co/hf-inference/models/{HF_MODEL_ID}"
+BIN = "/Users/boydlever/sherpa-build/sherpa-onnx/build/bin/sherpa-onnx-offline"
 
-headers = {
-    "Authorization": f"Bearer {HF_TOKEN}"
-}
+MODEL_DIR = os.path.abspath("asr_models/omnilingual_1b")
+MODEL = os.path.join(MODEL_DIR, "model.onnx")
+TOKENS = os.path.join(MODEL_DIR, "tokens.txt")
 
-def transcribe_with_omni_asr(audio_path: str) -> str:
-    """
-    Transcribe audio using Meta's OmniASR model via HuggingFace Inference API.
-    Supports 1600+ languages as of November 10, 2025.
-    """
-    print("Using OmniASR with HuggingFace Router.")
-    with open(audio_path, "rb") as f:
-        audio_bytes = f.read()
+def _run(cmd: str) -> str:
+    print("\n[omni_asr] Executing command:")
+    print(cmd, "\n")
 
-    response = requests.post(
-        API_URL,
-        headers=headers,
-        data=audio_bytes
+    p = subprocess.run(shlex.split(cmd), capture_output=True, text=True)
+
+    stdout = p.stdout or ""
+    stderr = p.stderr or ""
+    combined = stdout + "\n" + stderr
+
+    print("[omni_asr] returncode:", p.returncode)
+    print("[omni_asr] ---- STDOUT ----")
+    print(stdout)
+    print("[omni_asr] ---- STDERR ----")
+    print(stderr)
+
+    if p.returncode != 0:
+        raise RuntimeError("sherpa-onnx failed:\n" + combined.strip())
+
+    if not combined.strip():
+        raise RuntimeError("No output from sherpa-onnx:\n" + combined)
+
+    json_line = None
+    for line in combined.splitlines():
+        line = line.strip()
+        if line.startswith("{") and line.endswith("}"):
+            json_line = line
+
+    if not json_line:
+        raise RuntimeError("No transcription JSON found:\n" + combined)
+
+    print("[omni_asr] JSON located:", json_line)
+
+    import json
+    text = json.loads(json_line).get("text", "").strip()
+    print("[omni_asr] Final ASR text:", text)
+    return text
+
+def transcribe_with_omni_asr(wav_path: str) -> str:
+    cmd = (
+        f'{BIN} '
+        f'--tokens="{TOKENS}" '
+        f'--omnilingual-asr-model="{MODEL}" '
+        f'"{wav_path}"'
     )
-
-    response.raise_for_status()
-    data = response.json()
-
-    # HF returns a list of predictions; take top result
-    if isinstance(data, list) and "text" in data[0]:
-        return data[0]["text"]
-    else:
-        return str(data)
+    return _run(cmd)

@@ -7,6 +7,15 @@ import os
 from typing import Optional
 from utils.omni_asr import transcribe_with_omni_asr
 
+def play_audio_local(path: str):
+    """Play an audio file locally through the system speakers."""
+    try:
+        data, sr = sf.read(path)
+        sd.play(data, sr)
+        sd.wait()
+    except Exception as e:
+        print(f"[Audio Playback Error] {e}")
+
 class AudioProcessor:
     def __init__(self, sample_rate: int = 16000):
         """
