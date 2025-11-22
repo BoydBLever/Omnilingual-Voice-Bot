@@ -66,6 +66,6 @@ flowchart LR
     D --> E[Mode Switch / System Prompt Routing]
     E --> F[LLM Response Text]
     F --> G[gTTS Text-to-Speech Engine]
-    G --> H[Audio Reply (Speaker Output)]
+    G --> H[Audio Reply]
 ```
 
