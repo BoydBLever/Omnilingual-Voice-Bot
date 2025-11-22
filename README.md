@@ -47,28 +47,28 @@ cd sherpa-build/sherpa-onnx/build
 cmake ../../sherpa-onnx -DCMAKE_BUILD_TYPE=Release
 make -j8
 
-- verify the binary exists
-~/sherpa-build/sherpa-onnx/build/bin/sherpa-onnx-offline
-
 ### 6. Verify OmniASR model works
 /Users/<you>/sherpa-build/sherpa-onnx/build/bin/sherpa-onnx-offline \
   --tokens="asr_models/omnilingual_1b/tokens.txt" \
   --omnilingual-asr-model="asr_models/omnilingual_1b/model.onnx" \
   "asr_models/omnilingual_1b/test_wavs/en.wav"
 
-- You should see a JSON transcription output in your terminal.
-
 ## Run the Omnilingual Voice Conversation Bot
 python -m streamlit run app.py
 
 ## Architecture
 
+```mermaid
 flowchart LR
-    A[User Speech] --> B[OmniASR via sherpa-onnx]
+    A[User Speech]
+    --> B[OmniASR via sherpa-onnx]
+
     B --> C[Transcript Text]
-    C --> D[LLM Processor<br>LangChain + ChatOpenAI]
+    C --> D[LLM Processor<br/>(LangChain + ChatOpenAI)]
+
     D --> E[System Prompt Mode Switch]
     E --> F[LLM Response Text]
+
     F --> G[TTS Engine]
     G --> H[Audio Reply]
-
+```
