@@ -60,3 +60,15 @@ make -j8
 
 ## Run the Omnilingual Voice Conversation Bot
 python -m streamlit run app.py
+
+## Architecture
+
+```mermaid
+flowchart LR
+    A[User Speech] --> B[OmniASR via sherpa-onnx]
+    B --> C[Transcript Text]
+    C --> D[LLM Processor (LangChain + ChatOpenAI)]
+    D --> E[System Prompt Mode Switch]
+    E --> F[LLM Response Text]
+    F --> G[TTS Engine]
+    G --> H[Audio Reply]
