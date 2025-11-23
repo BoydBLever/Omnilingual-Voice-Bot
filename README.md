@@ -32,6 +32,13 @@ cd react-marketing-voice-bot
 ```
 
 ### 2. Create a virtual environment
+Option A — Using Conda (recommended)
+```
+conda create -n audio_llm python=3.11
+conda activate audio_llm
+```
+
+Option B — Using Python venv
 ```
 python3 -m venv audio_llm
 source audio_llm/bin/activate
@@ -69,6 +76,15 @@ make -j8
 ```
 python -m streamlit run app.py
 ```
+
+### 8. Re-activate your environment when returning to the project
+If you step away or your terminal session resets, remember to activate your environment again before trying to run the app. For example:
+
+```
+conda activate audio_llm
+python -m streamlit run app.py
+```
+
 ---
 
 ## Architecture
